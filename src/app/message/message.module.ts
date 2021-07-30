@@ -8,12 +8,14 @@ import { MessagePageRoutingModule } from './message-routing.module';
 
 import { MessagePage } from './message.page';
 
+
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
     MessagePageRoutingModule
+    
   ],
   declarations: [MessagePage]
 })

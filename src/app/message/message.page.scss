@@ -1,37 +1,32 @@
-ion-toolbar{
-    color: #FFF;
+.message{
+    padding:10px;
+    border-radius:15px;
+    margin-bottom:6px;
+    white-space:pre-wrap;
 }
-ion-header{
-    --ion-background-color: rgb(82, 59, 59);
+.other-message{
+    background:var(--ion-color-secondary);
+    color:#fff;
 }
-
-ion-content{
-    --ion-background-color: rgb(223, 169, 169);
-    
+.my-message{
+    background:var(--ion-color-tertiary);
+    color:#fff;
+    size:auto;
 }
-ion-card-content{
-    margin-top: 15px;
-    margin-bottom: 520px;
-    background-color:#ffffff00;
-    height: 160px;
+.time{
+    color:dfdfdf;
+    font-size:small;
 }
-ion-button{
-    margin-top: -1%;
-    margin-left: 80%;
+.msg.btn{
+--padding-start:1.5em;
+--padding-end:1.5em;
 }
-.contactlist{
-    background-color: #ffffff00;
-    color: rgb(255, 255, 255);
-    font-size: large;
-}
-.msg{
-    height: 100px;
-    width: 300px;
-    text-align: center;
-    margin-top:20px ;
-    margin-left:500px;
-}
-.save{
-    margin-top:-50px ;
-    margin-left:220px;
+.message-input{
+    width:98%;
+    border:2px solid var(--ion-color-medium);
+    border-radius: 20px;
+    background: #fff;
+    resize:none;
+    padding-left:10px;
+    padding-right:10px;
 }

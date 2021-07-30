@@ -1,62 +1,98 @@
+
 import { Component } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { FirebaseService } from '../services/firebase.service';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import {AlertController} from '@ionic/angular';
+
+interface ContactData {
+  contName: string;
+  familyName: string;
+  contNumber: string;
+}
 
 @Component({
   selector: 'app-tab3',
   templateUrl: 'tab3.page.html',
-  styleUrls: ['tab3.page.scss']
+  styleUrls: ['tab3.page.scss'],
 })
 export class Tab3Page {
-  contName ="";
-  contFamily = "";
-  contNumber ="";
-  contacts = [];
 
-  constructor(private alertCtrl:AlertController) {}
+  contactList = [];
+  contactData: ContactData;
+  contactForm: FormGroup;
 
-  saveC(){
-    let contact = {
-    name: this.contName,
-    family: this.contFamily,
-    number: this.contNumber
-  }
-  this.contacts.push(contact);
-  this.clearField();
-}
-
-  clearField(){
-    this.contName ="";
-    this.contFamily = "";
-    this.contNumber ="";
+  constructor(
+    private firebaseService: FirebaseService,
+    public fb: FormBuilder, public alertCtrl: AlertController
+  ) {
+    this.contactData = {} as ContactData;
   }
 
-  async confirmDelete(cont){
-    const alert = await this.alertCtrl.create({
-      header: 'Confirm Delete Contacts',
-      message: 'Remove this contact?',
-      buttons:[
-        {
-        text: 'No',
-        role: 'cancel',
-        cssClass:'icon-color',
-        handler: () => {
-            console.log('Cancel Clicked');
-        }
-        },
-        {
-          text:'Yes',
-          cssClass:'icon-color',
-          handler: () =>{
-            let index = this.contacts.indexOf(cont);
+  ngOnInit() {
 
-            if(index > -1){
-              this.contacts.splice(index, 1);
-            }
-          }
-        }
-      ]
+    this.contactForm = this.fb.group({
+      contName: ['', [Validators.required]],
+      familyName: ['', [Validators.required]],
+      contNumber: ['', [Validators.required]]
+    })
+
+    this.firebaseService.read_contact().subscribe(data => {
+
+      this.contactList = data.map(e => {
+        return {
+          id: e.payload.doc.id,
+          isEdit: false,
+          contName: e.payload.doc.data()['contName'],
+          familyName: e.payload.doc.data()['familyName'],
+          contNumber: e.payload.doc.data()['contNumber'],
+        };
+      })
+      console.log(this.contactList);
+
     });
-    await alert.present();
   }
+
+  CreateContact() {
+    console.log(this.contactForm.value);
+    this.firebaseService.create_contact(this.contactForm.value).then(resp => {
+      this.contactForm.reset();
+    })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
+ async RemoveContact(rowID) {
+    
+      let prompt=await this.alertCtrl.create({
+        header:'Are you sure you want to delete this contact?',
+        buttons:[
+          {
+            text:'No',
+            role:'cancel',
+            handler:()=>{
+              console.log('No');
+            }
+          },
+          {
+            text:'Yes',
+            cssClass:'warning',
+            handler:()=>{
+              this.firebaseService.delete_contact(rowID);
+              }
+            },
+            
+          
+         
+        ]
+    
+      });
+      prompt.present();
+  }
+
+ 
+
+ 
+  
 
 }
